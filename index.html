@@ -1,0 +1,325 @@
+<!VDNDOC "PageBase":"nvo_main","IniEvent":"PageIni","NotClientCache":true>
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="cache-control" content="no-cache" />
+		<meta http-equiv="expires" content="0" />
+		<link rel="stylesheet" href="css/mui.css">
+		<link rel="stylesheet" type="text/css" href="css/index.css" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<style type="text/css">
+			.mui-toast-container {
+				bottom: 20% !important;
+				/*离布局底部的距离*/
+			}
+			
+			.mui-toast-message {
+				width: 180px;
+				/*toast宽度*/
+				padding: 10px 5px 10px 5px;
+				/*toast中文字的位置*/
+				text-align: center;
+			}
+		</style>
+		<title>农佳云</title>
+		<style>
+			#wrapper {
+				position: absolute;
+				top: 0px;
+				left: 0;
+				width: 100%
+			}
+			
+			#pullDown {
+				padding: 0 10px;
+				height: 30px;
+				line-height: 30px;
+				color: #888;
+				text-align: center
+			}
+		</style>
+	</head>
+
+	<body>
+		<input type="hidden" id="login" value="" />
+		<input type="hidden" id="dlsm" value="" />
+		<input type="hidden" id="tysm" value="" />
+		<div id="wrapper">
+			<div id="scroller">
+				<div id="pullDown">
+					<span class="pullDownLabel"></span>
+				</div>
+				<div id="thelist">
+					<!--轮播图-->
+					<div class="mainslider mui-slider" style="z-index: 4;">
+						<div class="imgcontent mui-slider-group mui-slider-loop">
+							<!--支持循环，需要重复图片节点-->
+							<div class="mui-slider-item mui-slider-item-duplicate">
+								<a href="#"><img class="fine" src="" /></a>
+							</div>
+							<div class="mui-slider-item">
+								<a href="#"><img class="one" src="" /></a>
+							</div>
+							<div class="mui-slider-item">
+								<a href="#"><img class="two" src="" /></a>
+							</div>
+							<div class="mui-slider-item">
+								<a href="#"><img class="three" src="" /></a>
+							</div>
+							<div class="mui-slider-item">
+								<a href="#"><img class="four" src="" /></a>
+							</div>
+							<div class="mui-slider-item">
+								<a href="#"><img class="fine" src="" /></a>
+							</div>
+							<!--支持循环，需要重复图片节点-->
+							<div class="mui-slider-item mui-slider-item-duplicate">
+								<a href="#"><img class="one" src="" /></a>
+							</div>
+						</div>
+						<!--轮播图下小点-->
+						<div class="circle mui-slider-indicator">
+							<div class="mui-indicator mui-active" style="display: none;"></div>
+							<div class="mui-indicator" style="display: none;"></div>
+							<div class="mui-indicator" style="display: none;"></div>
+							<div class="mui-indicator" style="display: none;"></div>
+							<div class="mui-indicator" style="display: none;"></div>
+						</div>
+					</div>
+					<!--九宫格-->
+					<ul class="mainlists mui-table-view mui-grid-view mui-grid-9"></ul>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/mui.js"></script>
+		<script src="js/jquery-2.1.4.min.js"></script>
+		<script src="js/vdn.js"></script>
+		<script src="js/iscroll.js"></script>
+		<script>
+			mui.init({
+				swipeBack: true,
+				preloadPages: [{
+					url: "mainList.html",
+					id: "mainList.html"
+				}]
+			});
+
+			$(function() {
+				//			轮播图滚动
+				mui('.mui-slider').slider({
+					interval: 3000
+				});
+
+				mui('.mui-scroll-wrapper').scroll({
+					deceleration: 0.0005,
+					indicators: true //开启滚动条
+				});
+	
+				vdn.get({
+					"method": "nvo_main.getpicture"
+				}, function(data) {
+					var obj = JSON.parse(data.Result);
+					var myobj = [];
+					var count = 0;
+					for(var key in obj) {
+						if(obj[key] == "") {
+							count++;
+						}
+					}
+					//					如果没有一张图片是http加载的就用本地图片
+					if(count == 5) {
+						$(".one").prop("src", "images/1.jpg");
+						$(".two").prop("src", "images/2.jpg");
+						$(".three").prop("src", "images/3.jpg");
+						$(".four").prop("src", "images/4.jpg");
+						$(".five").prop("src", "images/5.jpg");
+						$(".circle").children().show();
+						return false;
+					}
+					//					过滤掉不带链接的数据
+					$.each(obj, function(index, item) {
+						if(item != "") {
+							myobj.push(item);
+						}
+					});
+					$(".imgcontent").empty();
+					$(".circle").empty();
+					//轮播图第一张
+					var firstdiv = $("<div>").addClass("mui-slider-item mui-slider-item-duplicate");
+					var firsta = $("<a>");
+					var firstimg = $("<img>").prop("src", myobj[myobj.length - 1]);
+					firsta.append(firstimg);
+					firstdiv.append(firsta);
+					$(".imgcontent").append(firstdiv);
+					//中间几张
+					for(var key in myobj) {
+						var div1 = $("<div>").addClass("mui-slider-item");
+						var a = $("<a>");
+						var img = $("<img>").prop("src", myobj[key]);
+						a.append(img);
+						div1.append(a);
+						$(".imgcontent").append(div1);
+						//轮播图导航小圆点	
+						var div2 = $("<div>").addClass("mui-indicator");
+						$(".circle").append(div2);
+					}
+					//轮播图最后一张
+					var lastdiv = $("<div>").addClass("mui-slider-item mui-slider-item-duplicate");
+					var lasta = $("<a>");
+					var lastimg = $("<img>").prop("src", myobj[0]);
+					lasta.append(lastimg);
+					lastdiv.append(lasta);
+					$(".imgcontent").append(lastdiv);
+					//初始化小圆点
+					$(".circle").children().eq(0).addClass("mui-active");
+
+					//加载Dom后初始化轮播图滚动
+					mui('.mui-slider').slider({
+						interval: 3000
+					});
+				}, function(err) {
+					console.log("Code:" + err.Code + ", Message" + err.Message)
+				})
+
+				vdn.get({
+						"method": "nvo_main.getyhqx_json"
+				}, function(data) {
+						//						动态循环创建节点
+						$.each(data.Result, function(index, item) {
+							var li = $("<li>");
+							li.addClass("mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3");
+							//							标签存储要传输到下一页面的值
+							li.attr("gnz", item.gnz);
+							var a = $("<a>");
+							var span = $("<span>");
+							//							给列表添加字体图标
+							//							span.addClass("mui-icon mui-icon-home");
+							if(index == 0) {
+								span.addClass("iconfont icon-shejijiageicon");
+							} else if(index == 1) {
+								span.addClass("iconfont icon-dingdanbianhaoicon");
+							} else {
+								span.addClass("iconfont icon-baobiao");
+							}
+							var div = $("<div>");
+							div.addClass("mui-media-body");
+							div.html(item.gnz.slice(2));
+							a.append(span).append(div);
+							li.append(a);
+							$(".mainlists").append(li);
+						});
+					},
+					function(err) {
+						console.log("err" + err)
+					}
+				);
+
+				//			点击主列表跳转页面
+				mui(".mainlists").on("tap", "li", function() {
+					var _this = $(this);
+					vdn.get({
+							"method": "nvo_main.getyhqx_gnmx_json",
+							"params": _this.attr("gnz")
+						}, function(data) {
+							//	只有一个列表就直接显示
+							if(data.Result.length == 1) {
+								console.log(data)
+								//取出当前被点击标签上的自定义属性值进行本地存储
+								localStorage.setItem("gnz", _this.attr("gnz"));
+								mui.openWindow({
+									url: data.Result[0].mid,
+									id: data.Result[0].mid,
+									waiting: {
+										autoShow: false
+									}
+								});
+							} else {
+								//取出当前被点击标签上的自定义属性值进行本地存储
+								localStorage.setItem("gnz", _this.attr("gnz"));
+								mui.openWindow({
+									url: "mainList.html",
+									id: "mainList.html",
+									waiting: {
+										autoShow: false
+									}
+								});
+							}
+						},
+						function(err) {
+							console.log("Code:" + err.Code + ", Message" + err.Message);
+						}
+					)
+				});
+			});
+
+			//			登录时才显示toast框
+			var dlsm = document.getElementById("dlsm");
+			var tysm = document.getElementById("tysm");
+			(function(dlsm, tysm) {
+				var smval = dlsm.value || tysm.value;
+				if(smval) {
+					var smarr = smval.split("<br>");
+					var smstr = smarr.join("\n");
+					mui.toast(smstr);
+				}
+			})(dlsm, tysm)
+		</script>
+
+		<script>
+			var myScroll, pullDownEl, pullDownOffset, pullUpEl, pullUpOffset, generatedCount = 0;
+
+			function loaded() {
+				//动画部分  
+				pullDownEl = document.getElementById('pullDown');
+				pullDownOffset = pullDownEl.offsetHeight;
+				myScroll = new iScroll('wrapper', {
+					useTransition: true,
+					topOffset: pullDownOffset,
+					onRefresh: function() {
+						if(pullDownEl.className.match('loading')) {
+							pullDownEl.className = '';
+							pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新';
+						}
+					},
+					onScrollMove: function() {
+
+						if(this.y > 5 && !pullDownEl.className.match('flip')) {
+							pullDownEl.className = 'flip';
+							pullDownEl.querySelector('.pullDownLabel').innerHTML = '释放刷新';
+							this.minScrollY = 0;
+						} else if(this.y < 5 && pullDownEl.className.match('flip')) {
+							pullDownEl.className = '';
+							//							pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
+							this.minScrollY = -pullDownOffset;
+						}
+					},
+					onScrollEnd: function() {
+						if(pullDownEl.className.match('flip')) {
+							pullDownEl.className = 'loading';
+							pullDownEl.querySelector('.pullDownLabel').innerHTML = '刷新中';
+							pullDownAction(); // Execute custom function (ajax call?)  
+						}
+					}
+				});
+			}
+			document.addEventListener('touchmove', function(e) {
+				e.preventDefault();
+			}, false); //阻止冒泡  
+			document.addEventListener('DOMContentLoaded', function() {
+				setTimeout(loaded, 0);
+			}, false);
+
+			//下拉重新登录
+			function pullDownAction() {
+				var loca = document.getElementById("login").value;
+				location.href = loca;
+			}
+		</script>
+	</body>
+
+</html>

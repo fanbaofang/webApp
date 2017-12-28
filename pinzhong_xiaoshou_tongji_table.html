@@ -1,0 +1,347 @@
+<!VDNDOC "PageBase":"nvo_bi","IniEvent":"PageIni","NotClientCache":true>
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no,maximum-scale=1,minimum-scale=1">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="cache-control" content="no-cache" />
+		<meta http-equiv="expires" content="0" />
+		<title>农家云</title>
+		<link rel="stylesheet" type="text/css" href="css/base.css" />
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/pinzhong_xiaoshou_tongji_table.css" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.picker.min.css" />
+		<style type="text/css">
+			#wrapper {
+				position: absolute;
+				top: 45px;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+			}
+			
+			#pullDown,
+			#pullUp {
+				padding: 0 10px;
+				height: 30px;
+				line-height: 30px;
+				color: #888;
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--侧滑菜单容器-->
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable mui-slide-in">
+			<!--菜单部分-->
+			<aside id="offCanvasSide" class="mui-off-canvas-right">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="continer">
+							<div class="startDate">
+								<span class="font">开始日期:</span>
+								<span class="date">2017年12月22日</span>
+								<span class="calendar iconfont icon-rili btn"></span>
+							</div>
+							<div class="endDate">
+								<span class="font">结束日期:</span>
+								<span class="date">2017年12月22日</span>
+								<span class="calendar iconfont icon-rili btn"></span>
+							</div>
+							<div class="sure">确定</div>
+							<div class="excel">电子表格excel</div>
+						</div>
+						<div id='result' class="ui-alert"></div>
+					</div>
+				</div>
+			</aside>
+			<div class="mui-inner-wrap">
+				<header id="header" class="mui-bar mui-bar-nav">
+					<a class="mui-action-back mui-icon mui-icon-back mui-pull-left"></a>
+					<a id="offCanvasBtn" href="#offCanvasSide" class="mui-icon mui-action-menu mui-icon-bars mui-pull-right"></a>
+					<h1 class="mui-title">左滑导航</h1>
+				</header>
+				<div id="wrapper">
+					<div id="scroller">
+						<div id="pullDown">
+							<span class="pullDownLabel">下拉刷新</span>
+						</div>
+						<ul id="thelist" class="outer mui-table-view mui-table-view-chevron">
+							<li class="managerli">
+								<!--列表标题-->
+								<div class="tit">
+									<div class="titl fl">
+										<span class="basec">销售分类:</span>
+										<span class="basec">蛋鸡料</span>
+									</div>
+								</div>
+								<!--列表内容-->
+								<div class="con">
+									<ul class="gray">
+										<li class="clearfloat">
+											<div class="fl">
+												<span>商品编号:</span><span>LT00001</span>
+											</div>
+											<div class="fr">
+												<span>货号:</span><span>151</span>
+											</div>
+										</li>
+										<li class="clearfloat">
+											<div class="fl">
+												<span>规格:</span><span>40</span>
+											</div>
+											<div class="fr">
+												<span>商品名称:</span><span>中猪料15</span>
+											</div>
+										</li>
+										<li>
+											<div>
+												<span>销量:</span><span>3.0</span>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</li>
+
+						</ul>
+						<div id="pullUp">
+							<span class="pullUpLabel">上拉加载更多</span>
+						</div>
+					</div>
+				</div>
+				<div class="mui-off-canvas-backdrop"></div>
+			</div>
+
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/mui.picker.min.js"></script>
+		<script src="js/jquery-2.1.4.min.js"></script>
+		<script src="js/iscroll.js"></script>
+		<script src="js/demoUtils.js"></script>
+		<script src="js/vdn.js"></script>
+		<script src="js/baiduTemplate.js"></script>
+		<!--<script type="text/template" id="model">
+				<%for(var i=0; i<data.length; i++){%>
+					<p><%=data[i][2]%></p>
+				<%}%>
+		</script>-->
+		<script>
+			mui.init({
+				swipeBack: false,
+			});
+
+			//主界面和侧滑菜单界面均支持区域滚动；
+			mui('#offCanvasSideScroll').scroll();
+			//实现ios平台的侧滑关闭页面；
+			if(mui.os.plus && mui.os.ios) {
+				offCanvasWrapper[0].addEventListener('shown', function(e) { //菜单显示完成事件
+					plus.webview.currentWebview().setStyle({
+						'popGesture': 'none'
+					});
+				});
+				offCanvasWrapper[0].addEventListener('hidden', function(e) { //菜单关闭完成事件
+					plus.webview.currentWebview().setStyle({
+						'popGesture': 'close'
+					});
+				});
+			}
+
+			//动态添加标题
+			var gnmc = localStorage.getItem("gnmc");
+			$("header").children("h1").html(gnmc);
+		</script>
+
+		<script>
+			var myScroll, pullDownEl, pullDownOffset, pullUpEl, pullUpOffset, generatedCount = 0;
+
+			function loaded() {
+				//动画部分  
+				pullDownEl = document.getElementById('pullDown');
+				pullDownOffset = pullDownEl.offsetHeight;
+				pullUpEl = document.getElementById('pullUp');
+				pullUpOffset = pullUpEl.offsetHeight;
+				myScroll = new iScroll('wrapper', {
+					useTransition: true,
+					topOffset: pullDownOffset,
+					onRefresh: function() {
+						if(pullDownEl.className.match('loading')) {
+							pullDownEl.className = '';
+							pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新';
+						} else if(pullUpEl.className.match('loading')) {
+							pullUpEl.className = '';
+							pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多';
+						}
+					},
+					onScrollMove: function() {
+
+						if(this.y > 5 && !pullDownEl.className.match('flip')) {
+							pullDownEl.className = 'flip';
+							pullDownEl.querySelector('.pullDownLabel').innerHTML = '释放刷新';
+							this.minScrollY = 0;
+						} else if(this.y < 5 && pullDownEl.className.match('flip')) {
+							pullDownEl.className = '';
+							pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
+							this.minScrollY = -pullDownOffset;
+						} else if(this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
+							pullUpEl.className = 'flip';
+							pullUpEl.querySelector('.pullUpLabel').innerHTML = '释放刷新';
+							this.maxScrollY = this.maxScrollY;
+						} else if(this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip')) {
+							pullUpEl.className = '';
+							pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
+							this.maxScrollY = pullUpOffset;
+						}
+					},
+					onScrollEnd: function() {
+						if(pullDownEl.className.match('flip')) {
+							pullDownEl.className = 'loading';
+							pullDownEl.querySelector('.pullDownLabel').innerHTML = '加载中';
+							pullDownAction(); // Execute custom function (ajax call?)  
+						} else if(pullUpEl.className.match('flip')) {
+							pullUpEl.className = 'loading';
+							pullUpEl.querySelector('.pullUpLabel').innerHTML = '加载中';
+							pullUpAction(); // Execute custom function (ajax call?)  
+						}
+					}
+				});
+
+				loadAction();
+			}
+			document.addEventListener('touchmove', function(e) {
+				e.preventDefault();
+			}, false); //阻止冒泡  
+			document.addEventListener('DOMContentLoaded', function() {
+				setTimeout(loaded, 0);
+			}, false);
+
+			//初始状态，加载数据  
+			function loadAction() {
+				
+				myScroll.refresh();
+			}
+
+			//下拉刷新当前数据  
+			function pullDownAction() {
+				setTimeout(function() {
+					//这里执行刷新操作  
+
+					myScroll.refresh();
+				}, 400);
+			}
+
+			//上拉加载更多数据  
+			function pullUpAction() {
+				setTimeout(function() {
+
+					myScroll.refresh();
+				}, 400);
+			}
+		</script>
+
+		<script>
+			(function($) {
+				$.init();
+				var result = $('#result')[0];
+				var btns = $('.btn');
+				var date = new Date();
+				var y = date.getFullYear();
+				var m = date.getMonth() + 1;
+				var d = date.getDate();
+				var tag = document.getElementsByClassName("date");
+				var selDate = {
+					"year": "" + y,
+					"month": "" + m,
+					"day": "" + d
+				};
+				for(var i = 0; i < tag.length; i++) {
+					tag[i].innerHTML = y + "年" + m + "月" + d + "日";
+					tag[i].parentNode.setAttribute("date", JSON.stringify(selDate));
+				}
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var _this = this;
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						options = {
+							type: "date",
+							beginDate: new Date(1990, 04, 22),
+							endDate: new Date(2015, 03, 21),
+							labels: ['年', '月', '日']
+						}
+
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs) {
+							var selDate = {
+								"year": rs.y.text,
+								"month": rs.m.text,
+								"day": rs.d.text
+							};
+							_this.parentNode.setAttribute("date", JSON.stringify(selDate));
+							_this.previousElementSibling.innerHTML = rs.y.value + "年" + rs.m.value + "月" + rs.d.value + "日";
+							result.innerText = '选择结果: ' + rs.text;
+							picker.dispose();
+						});
+					}, false);
+				});
+			})(mui);
+		</script>
+		<script>
+			//			点击确定
+			document.querySelector(".sure").addEventListener("tap", function() {
+				var startDate = $(".startDate").attr("date");
+				var endDate = $(".endDate").attr("date");
+				var dateObj = {
+					"startDate": JSON.parse(startDate),
+					"endDate": JSON.parse(endDate)
+				};
+				console.log(dateObj)
+			});
+
+			//点击excel
+			document.addEventListener("plusready", function() {
+				document.querySelector(".excel").addEventListener("tap", function() {
+					vdn.post({
+						"method": "nvo_bi.get_dw_excel",
+						"params": ["d_bi_khpzxsb", ""]
+					}, function(data) {
+						var durl = window.location.origin + JSON.parse(data.Result).xls;
+						
+						var dtask = plus.downloader.createDownload(durl, {}, function(d, status) {
+							//							 下载完成
+							if(status == 200) {
+								if(mui.os.ios) {
+									plus.runtime.openFile(d.filename);
+									mui.toast("请手动打开文件");
+								} else {
+									plus.runtime.openFile(d.filename);
+								}
+							} else {
+								mui.toast("下载失败" + status);
+							}
+							plus.runtime.openFile(d.filename);
+						});
+						dtask.start();
+					}, function(err) {
+						alert("Code:" + err.Code + ", Message" + err.Message);
+					})
+				});
+			}, false);
+
+///FileCache/nongjy/anerp/196.xls
+
+			//			vdn.post({
+			//				"method": "nvo_bi.get_dw_json",
+			//				"params": ["d_bi_khpzxsb", ""]
+			//			}, function(data) {
+			//				console.log(data);
+			//			}, function(err) {
+			//				alert("Code:" + err.Code + ", Message" + err.Message);
+			//			});
+		</script>
+	</body>
+
+</html>
