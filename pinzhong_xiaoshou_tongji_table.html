@@ -70,44 +70,26 @@
 						<div id="pullDown">
 							<span class="pullDownLabel">下拉刷新</span>
 						</div>
-						<ul id="thelist" class="outer mui-table-view mui-table-view-chevron">
-							<li class="managerli">
-								<!--列表标题-->
-								<div class="tit">
-									<div class="titl fl">
-										<span class="basec">销售分类:</span>
-										<span class="basec">蛋鸡料</span>
-									</div>
-								</div>
-								<!--列表内容-->
-								<div class="con">
-									<ul class="gray">
-										<li class="clearfloat">
-											<div class="fl">
-												<span>商品编号:</span><span>LT00001</span>
-											</div>
-											<div class="fr">
-												<span>货号:</span><span>151</span>
-											</div>
-										</li>
-										<li class="clearfloat">
-											<div class="fl">
-												<span>规格:</span><span>40</span>
-											</div>
-											<div class="fr">
-												<span>商品名称:</span><span>中猪料15</span>
-											</div>
-										</li>
-										<li>
-											<div>
-												<span>销量:</span><span>3.0</span>
-											</div>
-										</li>
-									</ul>
-								</div>
-							</li>
-
-						</ul>
+						<div id="table-count">
+							<table border="" cellspacing="" cellpadding="">
+								<tr id="head">
+									<th>销售分类</th>
+									<th>商品编号</th>
+									<th>货号</th>
+									<th>规格</th>
+									<th>商品名称</th>
+									<th>销量</th>
+								</tr>
+								<tr>
+									<td>蛋鸡料</td>
+									<td>HD1552540</td>
+									<td>213</td>
+									<td>40</td>
+									<td class="mui-media-body">产蛋鸭青年期配合饲料</td>
+									<td>0.04</td>
+								</tr>
+							</table>
+						</div>
 						<div id="pullUp">
 							<span class="pullUpLabel">上拉加载更多</span>
 						</div>
@@ -128,9 +110,6 @@
 			mui.init({
 				swipeBack: false,
 			});
-			
-			console.log("lalla");
-
 			//主界面和侧滑菜单界面均支持区域滚动；
 			mui('#offCanvasSideScroll').scroll();
 			//实现ios平台的侧滑关闭页面；
@@ -217,7 +196,14 @@
 
 			//初始状态，加载数据  
 			function loadAction() {
-				
+				vdn.post({
+					"method": "nvo_bi.get_dw_json",
+					"params": ["d_bi_khpzxsb", ""]
+				}, function(data) {
+					console.log(data)
+				}, function(err) {
+					//					alert("Code:" + err.Code + ", Message" + err.Message);
+				});
 				myScroll.refresh();
 			}
 
@@ -306,7 +292,6 @@
 						"params": ["d_bi_khpzxsb", ""]
 					}, function(data) {
 						var durl = window.location.origin + JSON.parse(data.Result).xls;
-						
 						var dtask = plus.downloader.createDownload(durl, {}, function(d, status) {
 							//							 下载完成
 							if(status == 200) {
@@ -327,17 +312,6 @@
 					})
 				});
 			}, false);
-
-///FileCache/nongjy/anerp/196.xls
-
-			//			vdn.post({
-			//				"method": "nvo_bi.get_dw_json",
-			//				"params": ["d_bi_khpzxsb", ""]
-			//			}, function(data) {
-			//				console.log(data);
-			//			}, function(err) {
-			//				alert("Code:" + err.Code + ", Message" + err.Message);
-			//			});
 		</script>
 	</body>
 

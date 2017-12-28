@@ -147,50 +147,73 @@ ul {
     background-color: #e5e5e5;
 }
 
-.outer {
-    margin-left: 4px;
-    margin-right: 4px;
-    background-color: #f0f0f2;
-    &::before {
-        height: 0;
-    }
-    &::after {
-        height: 0;
-    }
-    .managerli:nth-of-type(1) {
-        margin-top: 8px;
-    }
-    .managerli {
-        border: 1px solid #f90;
-        margin-top: 8px;
-        height: 126px;
-        border-radius: 10px 10px 6px 6px;
-        background-color: #fff;
-        .tit {
-            height: 40px;
-            border-bottom: 1px solid #f90;
-            padding-left: 6px;
-            padding-right: 6px;
-            .titl {
-                height: 40px;
-                line-height: 40px;
-                font-size: 16px;
-            }
+//.outer {
+//  margin-left: 4px;
+//  margin-right: 4px;
+//  background-color: #f0f0f2;
+//  &::before {
+//      height: 0;
+//  }
+//  &::after {
+//      height: 0;
+//  }
+//  .managerli:nth-of-type(1) {
+//      margin-top: 8px;
+//  }
+//  .managerli {
+//      border: 1px solid #f90;
+//      margin-top: 8px;
+//      height: 126px;
+//      border-radius: 10px 10px 6px 6px;
+//      background-color: #fff;
+//      .tit {
+//          height: 40px;
+//          border-bottom: 1px solid #f90;
+//          padding-left: 6px;
+//          padding-right: 6px;
+//          .titl {
+//              height: 40px;
+//              line-height: 40px;
+//              font-size: 16px;
+//          }
+//      }
+//      .con {
+//          padding-left: 6px;
+//          padding-right: 6px;
+//          border-top: 1px solid #f90;
+//          li {
+//              margin-top: 4px;
+//              font-size: 14px;
+//              div {
+//                  display: inline-block;
+//              }
+//              div.fr {
+//                  width: 50%;
+//              }
+//          }
+//      }
+//  }
+//}
+#table-count {
+    padding: 1px 1px 0 1px;
+    table {
+        width: 100%;
+        border: 1px solid #D3DFED;
+        th {
+            background-color: #428AD2;
+            color: #fff;
+            font-weight: 400;
+            font-family: "microsoft yahei";
         }
-        .con {
-            padding-left: 6px;
-            padding-right: 6px;
-            border-top: 1px solid #f90;
-            li {
-                margin-top: 4px;
-                font-size: 14px;
-                div {
-                    display: inline-block;
-                }
-                div.fr {
-                    width: 50%;
-                }
-            }
+        td {
+            color: #7C8491;
+        }
+        td:nth-of-type(-n+2) {
+            color: #5A8DC2;
+        }
+        th, td {
+            font-size: 14px !important;
+            text-align: center;
         }
     }
 }
