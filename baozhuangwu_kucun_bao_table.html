@@ -11,10 +11,10 @@
 		<title>农家云</title>
 		<link rel="stylesheet" type="text/css" href="css/base.css" />
 		<link rel="stylesheet" href="css/mui.min.css">
-		<link rel="stylesheet" href="css/pinzhong_xiaoshou_tongji_table.css" />
-		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<link rel="stylesheet" href="css/pinzhong_sales_tongji_table.css" />
 		<link rel="stylesheet" type="text/css" href="css/mui.picker.min.css" />
 	</head>
+	
 
 	<body>
 		<!--侧滑菜单容器-->
@@ -112,7 +112,7 @@
 							pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新';
 						} else if(pullUpEl.className.match('loading')) {
 							pullUpEl.className = '';
-							pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多';
+							pullUpEl.querySelector('.pullUpLabel').innerHTML = '';
 						}
 					},
 					onScrollMove: function() {
@@ -160,9 +160,8 @@
 			//echarts
 			vdn.post({
 				"method": "nvo_bi.get_dw_echarts",
-				"params": ["d_bi_khpzxsb", ""]
+				"params": ["d_bi_bzwkctjb", ""]
 			}, function(data) {
-				console.log(JSON.parse(data.Result))
 				var myChart = echarts.init(document.getElementById('main'));
 				var option = JSON.parse(data.Result);
 				option["grid"] = {
@@ -181,8 +180,10 @@
 				loadCurrentPage = 1;
 				vdn.post({
 					"method": "nvo_bi.get_dw",
-					"params": ["d_bi_khpzxsb", param]
+					"params": ["d_bi_bzwkctjb", param]
 				}, function(data) {
+					console.log(JSON.parse(data.Result));
+				
 					if(data.Result == "") {
 						mui.toast("无数据");
 					} else {
@@ -191,7 +192,7 @@
 				}, function(err) {
 					alert("Code:" + err.Code + ", Message" + err.Message);
 				});
-				myScroll.refresh();
+				myScroll.refresh();				
 			}
 
 			//下拉刷新当前数据  
@@ -235,7 +236,7 @@
 				var tbody = "";
 				thead += "<thead id='thead'>";
 				thead += "<tr>";
-				thead += "<th colspan='6'>" + tjsm + "</th>";
+				thead += "<td style='background:#fff;color:#828888;text-align:center' colspan='6'>" + tjsm + "</td>";
 				thead += "</tr>";
 				thead += "<tr>";
 				label.forEach(function(item, index) {
@@ -274,6 +275,7 @@
 			function getResult(dataArr, allData) {
 				//创建tbody
 				var tr = "";
+				console.log(dataArr[0]);
 				dataArr[0].forEach(function(item, index) {
 					tr += "<tr class=bgcolor" + item[0] + ">";
 					for(var i = 1; i < item.length; i++) {
@@ -316,7 +318,6 @@
 					picker.show(function(rs) {
 						var selDateArr = [rs.y.text, rs.m.text, rs.d.text];
 						var selDate = selDateArr.join(".");
-						console.log(selDate)
 						_this.parentNode.setAttribute("date", selDate);
 						_this.previousElementSibling.innerHTML = rs.y.value + "年" + rs.m.value + "月" + rs.d.value + "日";
 						//						result.innerText = '选择结果: ' + rs.text;
@@ -346,7 +347,7 @@
 				//				loadAction(JSON.stringify(dateObj));
 				vdn.post({
 					"method": "nvo_bi.get_dw",
-					"params": ["d_bi_khpzxsb", JSON.stringify(dateObj)]
+					"params": ["d_bi_bzwkctjb", JSON.stringify(dateObj)]
 				}, function(data) {
 					if(data.Result == "") {
 						mui.toast("无数据");
@@ -391,7 +392,7 @@
 					};
 					vdn.post({
 						"method": "nvo_bi.get_dw_excel",
-						"params": ["d_bi_khpzxsb", JSON.stringify(dateObj)]
+						"params": ["d_bi_bzwkctjb", JSON.stringify(dateObj)]
 					}, function(data) {
 						if(data.Result == "") {
 							mui.toast("无数据");

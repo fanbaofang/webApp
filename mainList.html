@@ -40,11 +40,7 @@
 		<script src="js/mui.js"></script>
 		<script>
 			mui.init({
-				swipeBack: true,
-				preloadPages: [{
-					url: "",
-					id: ""
-				}]
+				swipeBack: true
 			});
 
 			$(function() {
@@ -54,14 +50,15 @@
 				vdn.get({
 						"method": "nvo_main.getyhqx_gnmx_json",
 						"params": gnz
-				}, function(data) {
+					}, function(data) {
+						console.log(data)
 						$.each(data.Result, function(index, item) {
 							var li = $("<li>").addClass("list").attr("mid", item.mid).attr("gnmc", item.gnmc);
 							var a = $("<a>");
 							var span1 = $("<span>");
 							span1.addClass("bgicon");
 							var span2 = $("<span>");
-							span2.addClass("tit");	
+							span2.addClass("tit");
 							span2.html(item.gnmc);
 							var span3 = $("<span>");
 							span3.addClass("iconright mui-icon mui-icon-arrowright")
@@ -69,7 +66,7 @@
 							li.append(a);
 							$("#mycon").append(li);
 						});
-					},
+					}, 
 					function(err) {
 						console.log(err);
 						alert("Code:" + err.Code + ", Message" + err.Message);
@@ -91,7 +88,7 @@
 							autoShow: false
 						}
 					});
-				})
+				});
 			});
 		</script>
 	</body>

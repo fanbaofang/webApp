@@ -10,8 +10,8 @@
 		<meta http-equiv="expires" content="0" />
 		<link rel="stylesheet" href="css/mui.css">
 		<link rel="stylesheet" type="text/css" href="css/index.css" />
-		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
-		<style type="text/css">
+		<title>农佳云</title>
+		<style>
 			.mui-toast-container {
 				bottom: 20% !important;
 				/*离布局底部的距离*/
@@ -24,9 +24,20 @@
 				/*toast中文字的位置*/
 				text-align: center;
 			}
-		</style>
-		<title>农佳云</title>
-		<style>
+			
+			.icon {
+				/* 通过设置 font-size 来改变图标大小 */
+				width: 1.6em;
+				height: 1.6em;
+				/* 图标和文字相邻时，垂直对齐 */
+				vertical-align: -0.15em;
+				/* 通过设置 color 来改变 SVG 的颜色/fill */
+				fill: currentColor;
+				/* path 和 stroke 溢出 viewBox 部分在 IE 下会显示
+             normalize.css 中也包含这行 */
+				overflow: hidden;
+			}
+			
 			#wrapper {
 				position: absolute;
 				top: 0px;
@@ -95,18 +106,13 @@
 				</div>
 			</div>
 		</div>
-
 		<script src="js/mui.js"></script>
 		<script src="js/jquery-2.1.4.min.js"></script>
 		<script src="js/vdn.js"></script>
 		<script src="js/iscroll.js"></script>
 		<script>
 			mui.init({
-				swipeBack: true,
-				preloadPages: [{
-					url: "mainList.html",
-					id: "mainList.html"
-				}]
+				swipeBack: true
 			});
 
 			$(function() {
@@ -119,7 +125,7 @@
 					deceleration: 0.0005,
 					indicators: true //开启滚动条
 				});
-	
+
 				vdn.get({
 					"method": "nvo_main.getpicture"
 				}, function(data) {
@@ -189,33 +195,20 @@
 				vdn.get({
 						"method": "nvo_main.getyhqx_json"
 				}, function(data) {
-						//						动态循环创建节点
+						//动态循环创建节点
 						$.each(data.Result, function(index, item) {
-							var li = $("<li>");
-							li.addClass("mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3");
-							//							标签存储要传输到下一页面的值
-							li.attr("gnz", item.gnz);
-							var a = $("<a>");
-							var span = $("<span>");
-							//							给列表添加字体图标
-							//							span.addClass("mui-icon mui-icon-home");
-							if(index == 0) {
-								span.addClass("iconfont icon-shejijiageicon");
-							} else if(index == 1) {
-								span.addClass("iconfont icon-dingdanbianhaoicon");
-							} else {
-								span.addClass("iconfont icon-baobiao");
-							}
-							var div = $("<div>");
-							div.addClass("mui-media-body");
-							div.html(item.gnz.slice(2));
-							a.append(span).append(div);
-							li.append(a);
+							console.log(item)
+							var li = "<li gnz="+item.gnz+" class='mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3'>";
+							li += "<a>";
+							li += "<img src='images/index/"+item.bmp+".png'/>";
+							li += "<div class='mui-media-body'>"+item.gnz.slice(2)+"</div>";
+							li += "</a>";
+							li += "</li>";
 							$(".mainlists").append(li);
 						});
 					},
 					function(err) {
-						console.log("err" + err)
+						alert("Code:" + err.Code + ", Message" + err.Message);
 					}
 				);
 
